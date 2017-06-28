@@ -2,12 +2,17 @@
 This acts as the view in a MVC Pattern, and is responsible for all user interaction.
 For game logic see the FBullCowGame class.
 */
+
+#pragma once
+
 #include <iostream> 
 #include <string>
 #include "FBullCowGame.h"
 
+//Syntax to allign with Unreal standards.
 using FText = std::string;
 using int32 = int;
+
 
 void PrintIntro();
 FText GetValidGuess();
@@ -23,15 +28,20 @@ int main()
 	{
 		PrintIntro();
 		PlayGame();
-	} 
-	while (AskToPlayAgain());
+	} while (AskToPlayAgain());
 	return 0;
 }
 
-//Intro to game
+
 void PrintIntro()
 {
 	std::cout << "Welcome to Bulls and Cows Game\n";
+	std::cout << "          }   {         ___ " << std::endl;
+	std::cout << "          (o o)        (o o) " << std::endl;
+	std::cout << "   /-------\\ /          \\ /-------\\ " << std::endl;
+	std::cout << "  / | BULL |O            O| COW  | \\ " << std::endl;
+	std::cout << " *  |-,--- |              |------|  * " << std::endl;
+	std::cout << "    ^      ^              ^      ^ " << std::endl;
 	std::cout << "Can you guess the " << BCGame.GetHiddenWordLength();
 	std::cout << " letter isogram I'm thinking of?\n";
 	std::cout << std::endl;
@@ -63,7 +73,7 @@ FText GetValidGuess()
 		default:
 			break;
 		}
-	} while (Status !=EGuessStatus::OK); //loops until there are no errors
+	} while (Status != EGuessStatus::OK); //loops until there are no errors
 	return Guess;
 }
 
@@ -71,16 +81,16 @@ void PlayGame()
 {
 	BCGame.Reset();
 	int32 Maxtry = BCGame.GetMaxTries();
-	
+
 	//loop asking for guesses while game is NOT Won && Tries still remain.
-	
+
 	while (!BCGame.IsGameWon() && BCGame.GetCurrentTry() <= Maxtry)
 	{
-		FText Guess = GetValidGuess(); 
-		
+		FText Guess = GetValidGuess();
+
 		//submit valid guess to the game
 		FBullCowCount BullCowCount = BCGame.SubmitValidGuess(Guess);
-		
+
 		std::cout << "Bulls = " << BullCowCount.Bulls;
 		std::cout << " Cows = " << BullCowCount.Cows << "\n\n";
 	}
@@ -88,30 +98,30 @@ void PlayGame()
 	return;
 }
 
-	bool AskToPlayAgain()
+bool AskToPlayAgain()
+{
+	std::cout << "Do you want to play again with the same hidden word? y/n ";
+	FText Response = "";
+	std::getline(std::cin, Response);
+	if ((Response[0] == 'y') || (Response[0] == 'Y'))
 	{
-		std::cout << "Do you want to play again with the same hidden word? y/n ";
-		FText Response = "";
-		std::getline(std::cin, Response);
-		if ((Response[0]=='y') || (Response[0]=='Y'))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-		
+		return true;
 	}
-	
-	void PrintGameSummary() 
+	else
 	{
-		if (BCGame.IsGameWon())
-		{
-			std::cout << "Well Done - You Win!\n";
-		}
-		else
-		{
-			std::cout << "Better luck next time!\n";
-		}
+		return false;
 	}
+
+}
+
+void PrintGameSummary()
+{
+	if (BCGame.IsGameWon())
+	{
+		std::cout << "Well Done - You Win!\n";
+	}
+	else
+	{
+		std::cout << "Better luck next time!\n";
+	}
+}
